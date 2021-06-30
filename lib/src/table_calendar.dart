@@ -10,9 +10,11 @@ import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 import 'customization/calendar_builders.dart';
 import 'customization/calendar_style.dart';
 import 'customization/days_of_week_style.dart';
+import 'customization/footer_style.dart';
 import 'customization/header_style.dart';
 import 'shared/utils.dart';
 import 'table_calendar_base.dart';
+import 'widgets/calendar_footer.dart';
 import 'widgets/calendar_header.dart';
 import 'widgets/cell_content.dart';
 
@@ -140,6 +142,9 @@ class TableCalendar<T> extends StatefulWidget {
   /// Style for `TableCalendar`'s header.
   final HeaderStyle headerStyle;
 
+  /// Style for `TableCalendar`'s footer.
+  final FooterStyle footerStyle;
+
   /// Style for days of week displayed between `TableCalendar`'s header and content.
   final DaysOfWeekStyle daysOfWeekStyle;
 
@@ -238,6 +243,7 @@ class TableCalendar<T> extends StatefulWidget {
       swipeDetectionBehavior: SwipeDetectionBehavior.continuousDistinct,
     ),
     this.headerStyle = const HeaderStyle(),
+    this.footerStyle = const FooterStyle(),
     this.daysOfWeekStyle = const DaysOfWeekStyle(),
     this.calendarStyle = const CalendarStyle(),
     this.calendarBuilders = const CalendarBuilders(),
@@ -536,6 +542,23 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
               );
             },
           ),
+        ),
+        ValueListenableBuilder<DateTime>(
+          valueListenable: _focusedDay,
+          builder: (context, value, _) {
+            return CalendarFooter(
+              footerStyle: widget.footerStyle,
+              availableCalendarFormats: widget.availableCalendarFormats,
+              calendarFormat: widget.calendarFormat,
+              onFormatButtonTap: (format) {
+                assert(
+                widget.onFormatChanged != null,
+                'Using `FormatButton` without providing `onFormatChanged` will have no effect.',
+                );
+                widget.onFormatChanged?.call(format);
+              },
+            );
+          },
         ),
       ],
     );
